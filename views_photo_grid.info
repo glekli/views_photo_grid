@@ -1,0 +1,6 @@
+name = Views Photo Grid
+description = Adds a photo grid style plugin to Views.
+dependencies[] = views
+package = Views
+core = 7.x
+files[] = views/views_photo_grid_plugin_style.inc

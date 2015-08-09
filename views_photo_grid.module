@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Module file for the Views Photo Grid module.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function views_photo_grid_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'views_photo_grid') .'/views',
+  );
+}
+
+/**
+ * Preprocesses variables for the photo grid template.
+ */
+function template_preprocess_views_photo_grid_style(&$vars) {
+  $view = $vars['view'];
+  $handler  = $view->style_plugin;
+
+  $rendered_fields = $handler->render_fields($view->result);
+  $image_field = $handler->get_image_field_name();
+
+  $vars['items'] = array();
+
+  foreach ($rendered_fields as $key => $row) {
+    $vars['items'][] = $row[$image_field];
+  }
+
+}
