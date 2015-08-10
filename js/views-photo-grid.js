@@ -94,13 +94,25 @@
    * Renders the row. Applies CSS to the items in the row.
    */
   Drupal.viewsPhotoGrid.gridRow.prototype.render = function () {
+    if (this.items.length == 0) {
+      // There isn't anything to render.
+      return;
+    }
+
     // Calculate how much space is available for row items when accounting
     // for padding.
     var targetWidth = this.width - (this.items.length - 1) * this.padding;
 
     // All items will be resized by a certain percentage to make them fit
     // the width calculated above.
-    var adjustment = targetWidth / this.usedWidth;
+    var adjustment;
+    if (targetWidth < this.usedWidth) {
+      adjustment = targetWidth / this.usedWidth;
+    }
+    else {
+      // Content would need to be enlarged to fit. Leave as is.
+      adjustment = 1;
+    }
     this.height = Math.round(this.height * adjustment);
 
     // Keep track of the actual sized after adjustment. This will help
@@ -108,18 +120,22 @@
     var actualUsedWidth = 0;
 
     // Adjust widths so that the items fully fill in the full width.
+    // Apply css to place items.
     for (var i = 0; i < this.items.length; i++) {
-      this.items[i].displayHeight = this.height;
 
-      if (i < this.items.length - 1) {
-        this.items[i].displayWidth = Math.round(this.items[i].displayWidth * adjustment);
-        actualUsedWidth += this.items[i].displayWidth + this.padding;
-      }
-      else {
-        // Last item. Use up all the space that's left. This will fix
-        // rounding errors.
-        this.items[i].displayWidth = this.width - actualUsedWidth;
-        this.items[i].isLast = true;
+      if (adjustment != 1) {
+        this.items[i].displayHeight = this.height;
+
+        if (i < this.items.length - 1) {
+          this.items[i].displayWidth = Math.round(this.items[i].displayWidth * adjustment);
+          actualUsedWidth += this.items[i].displayWidth + this.padding;
+        }
+        else {
+          // Last item. Use up all the space that's left. This will fix
+          // rounding errors.
+          this.items[i].displayWidth = this.width - actualUsedWidth;
+          this.items[i].isLast = true;
+        }
       }
 
       // Apply placement.
@@ -128,6 +144,9 @@
       $('#views-photo-grid-' + this.items[i].itemId + ' img').css('height', this.items[i].displayHeight + 'px');
       if (!this.items[i].isLast) {
         $('#views-photo-grid-' + this.items[i].itemId + ' img').css('margin-right', this.padding + 'px');
+      }
+      else {
+        $('#views-photo-grid-' + this.items[i].itemId + ' img').css('margin-right', '0px');
       }
     }
 
