@@ -31,4 +31,9 @@ function template_preprocess_views_photo_grid_style(&$vars) {
     $vars['items'][] = $row[$image_field];
   }
 
+  $module_dir = drupal_get_path('module', 'views_photo_grid');
+  drupal_add_css($module_dir . '/css/views-photo-grid.css');
+  drupal_add_js($module_dir . '/js/views-photo-grid.js');
+
+
 }
