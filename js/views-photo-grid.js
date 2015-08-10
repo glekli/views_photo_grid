@@ -178,6 +178,7 @@
    *  Arranges the grid.
    */
   Drupal.behaviors.viewsPhotoGrid.arrangeGrid = function () {
+
     $('.views-photo-grid-container').each(function (containerIndex) {
       var container = $(this);
       var containerWidth = container.width();
@@ -207,7 +208,9 @@
 
       // Arrange items into rows.
       var rowId = 0;
-      var row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth);
+      var gridPadding = parseInt(Drupal.settings.viewsPhotoGrid.gridPadding);
+      var row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth, gridPadding);
+
       for (i = 0; i < items.length; i++) {
         var item = items[i];
 
@@ -229,7 +232,7 @@
           // This item is the last one that fits the container.
           // Render, and start a new row.
           row.render();
-          row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth);
+          row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth, gridPadding);
         }
 
       }

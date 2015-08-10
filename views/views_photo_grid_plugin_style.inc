@@ -6,6 +6,33 @@
 
 class views_photo_grid_plugin_style extends views_plugin_style {
 
+  /**
+   * Sets option defaults.
+   */
+  function option_definition() {
+    $options = parent::option_definition();
+
+    $options['grid_padding'] = array('default' => 1);
+
+    return $options;
+  }
+
+  /**
+   * Renders the options form.
+   */
+  function options_form(&$form, &$form_state) {
+    parent::options_form($form, $form_state);
+
+    $form['grid_padding'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Padding'),
+      '#size' => 2,
+      '#description' => t('The amount of padding in pixels in between grid items.'),
+      '#default_value' => $this->options['grid_padding'],
+      '#maxlength' => 2,
+    );
+  }
+
   function get_image_field_name() {
     $fields = $this->display->handler->get_handlers('field');
 
