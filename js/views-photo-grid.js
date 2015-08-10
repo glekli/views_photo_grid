@@ -168,13 +168,6 @@
   };
 
   /**
-   * Attaches handlers.
-   */
-  Drupal.behaviors.viewsPhotoGrid.attach = function (context) {
-
-  };
-
-  /**
    *  Arranges the grid.
    */
   Drupal.behaviors.viewsPhotoGrid.arrangeGrid = function () {
@@ -243,6 +236,13 @@
     });
 
   }; // arrangeGrid()
+
+  /**
+   * Attaches behaviors.
+   */
+  Drupal.behaviors.viewsPhotoGrid.attach = function (context) {
+    Drupal.behaviors.viewsPhotoGrid.arrangeGrid();
+  };
 
 
 })(jQuery);
