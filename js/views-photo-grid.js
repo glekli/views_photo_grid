@@ -9,6 +9,35 @@
   Drupal.behaviors.viewsPhotoGrid = {};
 
   /**
+   * Constructor for the grid object.
+   *
+   * @param width
+   *   The total width of the grid that the each row must fit.
+   * @param padding
+   *   Padding between items in pixels.
+   */
+  Drupal.viewsPhotoGrid.grid = function (width, padding) {
+    this.width = width;
+    this.padding = (typeof padding !== 'undefined' ? padding : 1);
+    this.rows = [];
+  };
+
+  /**
+   * Creates a new row and adds it to the grid object.
+   *
+   * @returns {Drupal.viewsPhotoGrid.gridRow}
+   *   The new row.
+   */
+  Drupal.viewsPhotoGrid.grid.prototype.createRow = function () {
+    // Use array index as id. Id is used in the calculation to determine
+    // position so it needs to be sequential.
+    var rowId = this.rows.length;
+    var row = new Drupal.viewsPhotoGrid.gridRow(rowId, this.width, this.padding);
+    this.rows.push(row);
+    return row;
+  };
+
+  /**
    * Constructor for the row object.
    *
    * @param rowId
@@ -27,15 +56,45 @@
     this.items = [];
   };
 
+
   /**
-   * Adds an item to the row. Keeps track of the width used by the item.
+   * Creates and adds an item to the row. Keeps track of the width used by
+   * the item.
    *
-   * @param item
-   *   Row item object.
+   * @param itemId
+   *   The item's id. Added to the dom elements for identification purposes.
+   * @param width
+   *   The original width of the image contained in this grid item.
+   * @param height
+   *   The original height of the image contained in this grid item.
    */
-  Drupal.viewsPhotoGrid.gridRow.prototype.addItem = function (item) {
+  Drupal.viewsPhotoGrid.gridRow.prototype.createItem = function (itemId, width, height) {
+    var item = new Drupal.viewsPhotoGrid.gridItem(itemId);
+    item.width = width;
+    item.height = height;
+    item.displayWidth = width;
+    item.displayHeight = height;
+
+    // Place item into the row.
+    if ((item.displayHeight && item.displayHeight < this.height) || !this.height) {
+      // This item is smaller than the current row height.
+      // Need to shrink the row to avoid upscaling.
+      this.adjustRowHeight(item.height);
+    }
+    else {
+      // Resize the item to match the row height.
+      item = this.fitItem(item);
+    }
+
     this.items.push(item);
     this.usedWidth = this.usedWidth + item.displayWidth;
+  };
+
+  /**
+   * Checks if there is available space in the row for further items.
+   */
+  Drupal.viewsPhotoGrid.gridRow.prototype.isFull = function () {
+    return (this.getAvailableWidth() <= 0);
   };
 
   /**
@@ -185,10 +244,10 @@
       var container = $(this);
       var containerWidth = container.width();
 
-      // Create row object.
-      var rowId = 0;
+      // Create grid objects.
       var gridPadding = parseInt(Drupal.settings.viewsPhotoGrid.gridPadding);
-      var row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth, gridPadding);
+      var grid = new Drupal.viewsPhotoGrid.grid(containerWidth, gridPadding);
+      var row = grid.createRow();
 
       // Find grid items and create rows.
       container.find('.views-photo-grid-item').each(function (itemIndex) {
@@ -203,32 +262,14 @@
         $(this).find('img').css('height', '');
         $(this).find('img').css('width', '');
 
-        var item = new Drupal.viewsPhotoGrid.gridItem(itemId);
-        item.width = img.width();
-        item.height = img.height();
-        item.displayWidth = item.width;
-        item.displayHeight = item.height;
-
-        // Place item into the row.
-        if ((item.displayHeight && item.displayHeight < row.height) || !row.height) {
-          // This item is smaller than the current row height.
-          // Need to shrink the row to avoid upscaling.
-          row.adjustRowHeight(item.height);
-        }
-        else {
-          // Resize the item to match the row height.
-          item = row.fitItem(item);
-        }
-
-        row.addItem(item);
+        row.createItem(itemId, img.width(), img.height());
 
         // Check if adding this item has used up all the space.
-        var availableWidth = row.getAvailableWidth();
-        if (availableWidth <= 0) {
+        if (row.isFull()) {
           // This item is the last one that fits the container.
           // Render, and start a new row.
           row.render();
-          row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth, gridPadding);
+          row = grid.createRow();
         }
 
       }); // container.find('.views-photo-grid-item').each()
