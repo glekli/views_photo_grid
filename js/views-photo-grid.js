@@ -16,7 +16,8 @@
    * @param padding
    *   Padding between items in pixels.
    */
-  Drupal.viewsPhotoGrid.grid = function (width, padding) {
+  Drupal.viewsPhotoGrid.grid = function (gridId, width, padding) {
+    this.gridId = gridId;
     this.width = width;
     this.padding = (typeof padding !== 'undefined' ? padding : 1);
     this.rows = [];
@@ -35,6 +36,25 @@
     var row = new Drupal.viewsPhotoGrid.gridRow(rowId, this.width, this.padding);
     this.rows.push(row);
     return row;
+  };
+
+  /**
+   * Renders the grid.
+   */
+  Drupal.viewsPhotoGrid.grid.prototype.render = function () {
+    // Keeps track of the current vertical position.
+    var currentPos = 0;
+
+    // Iterate through all rows, and let them render at the current
+    // vertical position.
+    for (var i = 0; i < this.rows.length; i++) {
+      this.rows[i].render(currentPos);
+
+      currentPos += this.rows[i].height + this.padding;
+    }
+
+    // Set the height on the container
+    $('#views-photo-grid-' + this.gridId).css('height', currentPos + 'px');
   };
 
   /**
@@ -160,7 +180,7 @@
   /**
    * Renders the row. Applies CSS to the items in the row.
    */
-  Drupal.viewsPhotoGrid.gridRow.prototype.render = function () {
+  Drupal.viewsPhotoGrid.gridRow.prototype.render = function (top) {
     if (this.items.length == 0) {
       // There isn't anything to render.
       return;
@@ -182,39 +202,37 @@
     }
     this.height = Math.round(this.height * adjustment);
 
-    // Keep track of the actual size after adjustment. This will help
-    // fix the discrepancy caused by rounding.
-    var actualUsedWidth = 0;
+    // Keeps track of the X position where the next item
+    // should be placed.
+    var currentPos = 0;
 
     // Adjust widths so that the items fully fill in the full width.
     // Apply css to place items.
     for (var i = 0; i < this.items.length; i++) {
 
+      // Adjust size to fit the width, if needed.
       if (adjustment != 1) {
         this.items[i].displayHeight = this.height;
 
         if (i < this.items.length - 1) {
           this.items[i].displayWidth = Math.round(this.items[i].displayWidth * adjustment);
-          actualUsedWidth += this.items[i].displayWidth + this.padding;
         }
         else {
-          // Last item. Use up all the space that's left. This will fix
-          // rounding errors.
-          this.items[i].displayWidth = this.width - actualUsedWidth;
-          this.items[i].isLast = true;
+          // The last item should use up all the space that's left. This will
+          // fix the discrepancy caused by rounding.
+          this.items[i].displayWidth = this.width - currentPos;
         }
       }
 
       // Apply placement.
-      $('#views-photo-grid-' + this.items[i].itemId).attr('data-row-id', this.rowId);
-      $('#views-photo-grid-' + this.items[i].itemId + ' img').css('width', this.items[i].displayWidth + 'px');
-      $('#views-photo-grid-' + this.items[i].itemId + ' img').css('height', this.items[i].displayHeight + 'px');
-      if (!this.items[i].isLast) {
-        $('#views-photo-grid-' + this.items[i].itemId + ' img').css('margin-right', this.padding + 'px');
-      }
-      else {
-        $('#views-photo-grid-' + this.items[i].itemId + ' img').css('margin-right', '0px');
-      }
+      var elem = $('#views-photo-grid-' + this.items[i].itemId);
+      elem.attr('data-row-id', this.rowId);
+      elem.css('top', top + 'px');
+      elem.css('left', currentPos + 'px');
+      elem.find('img').css('width', this.items[i].displayWidth + 'px');
+      elem.find('img').css('height', this.items[i].displayHeight + 'px');
+
+      currentPos += this.items[i].displayWidth + this.padding;
     }
 
   };
@@ -231,7 +249,6 @@
     this.height = 0;
     this.displayWidth = 0;
     this.displayHeight = 0;
-    this.isLast = false;
   };
 
   /**
@@ -244,15 +261,18 @@
       var container = $(this);
       var containerWidth = container.width();
 
+      // Create a unique id for this grid container.
+      $(this).attr('id', 'views-photo-grid-' + containerIndex);
+
       // Create grid objects.
       var gridPadding = parseInt(Drupal.settings.viewsPhotoGrid.gridPadding);
-      var grid = new Drupal.viewsPhotoGrid.grid(containerWidth, gridPadding);
+      var grid = new Drupal.viewsPhotoGrid.grid(containerIndex, containerWidth, gridPadding);
       var row = grid.createRow();
 
       // Find grid items and create rows.
       container.find('.views-photo-grid-item').each(function (itemIndex) {
 
-        // Create a unique id for this element.
+        // Create a unique id for this grid item.
         var itemId = containerIndex + '-' + itemIndex;
         $(this).attr('id', 'views-photo-grid-' + itemId);
 
@@ -267,15 +287,14 @@
         // Check if adding this item has used up all the space.
         if (row.isFull()) {
           // This item is the last one that fits the container.
-          // Render, and start a new row.
-          row.render();
+          // Start a new row.
           row = grid.createRow();
         }
 
       }); // container.find('.views-photo-grid-item').each()
 
-      // Last row is yet to be rendered.
-      row.render();
+      // Render.
+      grid.render();
 
     });
 
