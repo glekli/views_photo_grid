@@ -180,12 +180,17 @@
    */
   Drupal.behaviors.viewsPhotoGrid.arrangeGrid = function () {
 
+    // Find all instances of this view style.
     $('.views-photo-grid-container').each(function (containerIndex) {
       var container = $(this);
       var containerWidth = container.width();
-      var items = [];
 
-      // Find grid items, retrieve image sizes, and assign ids.
+      // Create row object.
+      var rowId = 0;
+      var gridPadding = parseInt(Drupal.settings.viewsPhotoGrid.gridPadding);
+      var row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth, gridPadding);
+
+      // Find grid items and create rows.
       container.find('.views-photo-grid-item').each(function (itemIndex) {
 
         // Create a unique id for this element.
@@ -204,17 +209,7 @@
         item.displayWidth = item.width;
         item.displayHeight = item.height;
 
-        items.push(item);
-      });
-
-      // Arrange items into rows.
-      var rowId = 0;
-      var gridPadding = parseInt(Drupal.settings.viewsPhotoGrid.gridPadding);
-      var row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth, gridPadding);
-
-      for (i = 0; i < items.length; i++) {
-        var item = items[i];
-
+        // Place item into the row.
         if ((item.displayHeight && item.displayHeight < row.height) || !row.height) {
           // This item is smaller than the current row height.
           // Need to shrink the row to avoid upscaling.
@@ -236,7 +231,7 @@
           row = new Drupal.viewsPhotoGrid.gridRow(rowId++, containerWidth, gridPadding);
         }
 
-      }
+      }); // container.find('.views-photo-grid-item').each()
 
       // Last row is yet to be rendered.
       row.render();
