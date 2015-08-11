@@ -28,7 +28,9 @@ function template_preprocess_views_photo_grid_style(&$vars) {
   $vars['items'] = array();
 
   foreach ($rendered_fields as $key => $row) {
-    $vars['items'][] = $row[$image_field];
+    if (!empty($row[$image_field])) {
+      $vars['items'][] = $row[$image_field];
+    }
   }
 
   $module_dir = drupal_get_path('module', 'views_photo_grid');

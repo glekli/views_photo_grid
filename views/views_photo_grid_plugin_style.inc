@@ -33,12 +33,15 @@ class views_photo_grid_plugin_style extends views_plugin_style {
     );
   }
 
+  /**
+   * Returns the name of the image field used in the view.
+   */
   function get_image_field_name() {
     $fields = $this->display->handler->get_handlers('field');
 
     // Find the first non-excluded image field.
     foreach ($fields as $key => $field) {
-      if (empty($field->options['exclude']) && $field->field_info['type'] == 'image') {
+      if (empty($field->options['exclude']) && !empty($field->field_info['type']) && $field->field_info['type'] == 'image') {
         return $key;
       }
     }
@@ -46,8 +49,19 @@ class views_photo_grid_plugin_style extends views_plugin_style {
     return FALSE;
   }
 
+  /**
+   * Validates the view configuration.
+   * Fails if there is a non-image field, or there are more
+   * than one image fields that are not excluded from display.
+   */
   function validate() {
     $errors = parent::validate();
+
+    if (!is_numeric($this->view->vid)) {
+      // Skip validation when the view is being created.
+      // (the default field is a title field, which would fail.)
+      return $errors;
+    }
 
     // Get a list of fields that have been added to the display.
     $fields = $this->display->handler->get_handlers('field');
@@ -62,7 +76,7 @@ class views_photo_grid_plugin_style extends views_plugin_style {
         continue;
       }
 
-      if ($field->field_info['type'] != 'image') {
+      if (empty($field->field_info['type']) || $field->field_info['type'] != 'image') {
         // Cannot display non-image fields. That would break the image grid.
         $fields_valid = FALSE;
         break;
