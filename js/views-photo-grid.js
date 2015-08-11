@@ -57,6 +57,10 @@
    *   The modified item object.
    */
   Drupal.viewsPhotoGrid.gridRow.prototype.fitItem = function (item) {
+    if (!item.width || !item.height) {
+      return item;
+    }
+
     var aspect = item.width / item.height;
     var newWidth = Math.round(aspect * this.height);
 
@@ -80,6 +84,10 @@
     // the aspect ratio.
     this.usedWidth = 0;
     for (var i = 0; i < this.items.length; i++) {
+      if (!this.items[i].width || !this.items[i].height) {
+        continue;
+      }
+
       var aspect = this.items[i].width / this.items[i].height;
       var newWidth = Math.round(aspect * this.height);
 
@@ -115,7 +123,7 @@
     }
     this.height = Math.round(this.height * adjustment);
 
-    // Keep track of the actual sized after adjustment. This will help
+    // Keep track of the actual size after adjustment. This will help
     // fix the discrepancy caused by rounding.
     var actualUsedWidth = 0;
 
@@ -207,7 +215,7 @@
       for (i = 0; i < items.length; i++) {
         var item = items[i];
 
-        if (item.displayHeight < row.height || !row.height) {
+        if ((item.displayHeight && item.displayHeight < row.height) || !row.height) {
           // This item is smaller than the current row height.
           // Need to shrink the row to avoid upscaling.
           row.adjustRowHeight(item.height);
@@ -254,7 +262,7 @@
       }
 
       timer = setTimeout(function () {
-    Drupal.behaviors.viewsPhotoGrid.arrangeGrid();
+        Drupal.behaviors.viewsPhotoGrid.arrangeGrid();
       }, 100);
     };
   };
