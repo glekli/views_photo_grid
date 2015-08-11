@@ -4,12 +4,13 @@
  * Implements hook_views_plugins().
  */
 function views_photo_grid_views_plugins() {
+  $module_path = drupal_get_path('module', 'views_photo_grid');
 
   return array(
     'module' => 'views_photo_grid',
     'style' => array(
       'views_photo_grid' => array(
-        'title' => t('Views Photo Grid'),
+        'title' => t('Photo grid'),
         'help' => t('Displays photos in a grid.'),
         'handler' => 'views_photo_grid_plugin_style',
         'theme' => 'views_photo_grid_style',
@@ -17,8 +18,8 @@ function views_photo_grid_views_plugins() {
         'uses options' => TRUE,
         'uses fields' => TRUE,
         'type' => 'normal',
-        'theme path' => drupal_get_path('module', 'views_photo_grid') . '/views',
-        // 'path' => drupal_get_path('module', 'views_photo_grid') . '/views',
+        'theme path' => $module_path . '/views',
+        // 'path' => $module_path . '/views',
       ),
     ),
   );

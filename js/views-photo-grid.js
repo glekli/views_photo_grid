@@ -318,7 +318,7 @@
 
       timer = setTimeout(function () {
         Drupal.behaviors.viewsPhotoGrid.arrangeGrid();
-      }, 100);
+      }, 50);
     };
   };
 
