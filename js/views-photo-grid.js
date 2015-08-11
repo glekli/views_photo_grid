@@ -238,15 +238,40 @@
   }; // arrangeGrid()
 
   /**
+   * Returns a function that can be used as an event handler.
+   * The function triggers arrangeGrid() and ensures that it's not triggered
+   * too frequently.
+   *
+   * @returns {Function}
+   *   Event handler.
+   */
+  Drupal.behaviors.viewsPhotoGrid.getTriggerHandler = function () {
+    var timer;
+
+    return function () {
+      if (timer) {
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(function () {
+    Drupal.behaviors.viewsPhotoGrid.arrangeGrid();
+      }, 100);
+    };
+  };
+
+  /**
    * Attaches behaviors.
    */
   Drupal.behaviors.viewsPhotoGrid.attach = function (context) {
-    Drupal.behaviors.viewsPhotoGrid.arrangeGrid();
-  };
+    var triggerHandler = this.getTriggerHandler();
 
+    // Arrange grid items.
+    this.arrangeGrid();
+
+    // Attach event listeners to trigger grid rearrangement when necessary.
+    $('.views-photo-grid-item img').bind('load', triggerHandler);
+    $(window).bind('resize', triggerHandler);
+  };
 
 })(jQuery);
 
-jQuery(function() {
-  jQuery(window).bind('resize', Drupal.behaviors.viewsPhotoGrid.arrangeGrid);
-});
