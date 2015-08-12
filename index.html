@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Demo gallery for the Views Photo Grid Drupal module">
+
+    <title>Views Photo Grid - Demo</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/views-photo-grid.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding-top: 70px;
+        }
+        .title {
+            margin-bottom: 20px;
+        }
+        .main-content {
+            margin-bottom: 50px;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+        button:focus {
+            outline:0 !important;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <span class="navbar-brand">Views Photo Grid</span>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="https://www.drupal.org/project/views_photo_grid">Drupal module</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/glekli/views_photo_grid">GitHub</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container main-content">
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+
+                <div class="title clearfix">
+                    <h2 class="pull-left">Demo Gallery</h2>
+                    <div class="buttons pull-right">
+                        <div class="btn-group btn-group-xs buttons-option buttons-option-size" role="group">
+                          <button type="button" class="btn btn-default active" data-value="small">Small</button>
+                          <button type="button" class="btn btn-default" data-value="large">Large</button>
+                        </div>
+                        &nbsp;
+                        <div class="btn-group btn-group-xs buttons-option buttons-option-padding" role="group">
+                          <button type="button" class="btn btn-default active" data-value="2">Thin padding</button>
+                          <button type="button" class="btn btn-default" data-value="6">Thick padding</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="views-photo-grid-container"></div>
+
+            </div>
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <script src="js/jquery.js"></script>
+    <script src="js/demo.js"></script>
+    <script src="js/views-photo-grid.js"></script>
+
+</body>
+
+</html>
