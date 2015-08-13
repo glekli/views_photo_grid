@@ -10,7 +10,7 @@ $(function () {
   function renderImages() {
     Drupal.settings.viewsPhotoGrid.gridSize = $('.buttons-option-size').find('.active').attr('data-value');
     Drupal.settings.viewsPhotoGrid.gridPadding = $('.buttons-option-padding').find('.active').attr('data-value');
-    var baseSize = (Drupal.settings.viewsPhotoGrid.gridSize == 'small' ? 200 : 600);
+    var baseSize = (Drupal.settings.viewsPhotoGrid.gridSize == 'small' ? 150 : 500);
     var count = (Drupal.settings.viewsPhotoGrid.gridSize == 'small' ? 30 : 15);
 
     // Clear content.
@@ -18,8 +18,8 @@ $(function () {
 
     // Generate random-sized images.
     for (var i = 0; i < count; i++) {
-      var w = baseSize + 10 * Math.round(20 * Math.random());
-      var h = baseSize + 10 * Math.round(20 * Math.random());
+      var w = baseSize + 50 * Math.round(5 * Math.random());
+      var h = baseSize + 50 * Math.round(5 * Math.random());
       var url = 'http://lorempixel.com/' + w + '/' + h + '/';
 
       $('.views-photo-grid-container').append('<div class="views-photo-grid-item"><img src="' + url + '"></div>');
