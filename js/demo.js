@@ -23,7 +23,7 @@ $(function () {
       var url = 'https://placeimg.com/' + w + '/' + h + '/any';
       // var url = 'http://lorempixel.com/' + w + '/' + h + '/';
 
-      $('.views-photo-grid-container').append('<div class="views-photo-grid-item"><img src="' + url + '"></div>');
+      $('.views-photo-grid-container').append('<div class="views-photo-grid-item"><img width="' + w + '" height="' + h + '" src="' + url + '"></div>');
     }
 
     // Initialize Views Photo Grid.
