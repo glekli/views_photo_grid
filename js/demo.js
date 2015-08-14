@@ -20,7 +20,8 @@ $(function () {
     for (var i = 0; i < count; i++) {
       var w = baseSize + 50 * Math.round(5 * Math.random());
       var h = baseSize + 50 * Math.round(5 * Math.random());
-      var url = 'http://lorempixel.com/' + w + '/' + h + '/';
+      var url = 'https://placeimg.com/' + w + '/' + h + '/any';
+      // var url = 'http://lorempixel.com/' + w + '/' + h + '/';
 
       $('.views-photo-grid-container').append('<div class="views-photo-grid-item"><img src="' + url + '"></div>');
     }
