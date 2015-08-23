@@ -1,30 +1,52 @@
 <?php
+
 /**
  * @file
- * Style plugin for Views Photo Grid.
+ * Contains \Drupal\views_photo_grid\Plugin\views\style\PhotoGrid.
  */
 
-class views_photo_grid_plugin_style extends views_plugin_style {
+namespace Drupal\views_photo_grid\Plugin\views\style;
+
+use Drupal\views\Plugin\views\style\StylePluginBase;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Style plugin to render the photo grid.
+ *
+ * @ViewsStyle(
+ *   id = "views_photo_grid",
+ *   title = @Translation("Photo Grid"),
+ *   help = @Translation("Displays photos in a grid."),
+ *   theme = "views_photo_grid_style",
+ *   display_types = {"normal"}
+ * )
+ */
+class PhotoGrid extends StylePluginBase {
 
   /**
-   * Sets option defaults.
+   * Does the style plugin allows to use style plugins.
+   *
+   * @var bool
    */
-  function option_definition() {
-    $options = parent::option_definition();
+  protected $usesRowPlugin = FALSE;
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function defineOptions() {
+    $options = parent::defineOptions();
     $options['grid_padding'] = array('default' => 1);
-
     return $options;
   }
 
   /**
-   * Renders the options form.
+   * {@inheritdoc}
    */
-  function options_form(&$form, &$form_state) {
-    parent::options_form($form, $form_state);
+  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
+    parent::buildOptionsForm($form, $form_state);
 
     $form['grid_padding'] = array(
-      '#type' => 'textfield',
+      '#type' => 'number',
       '#title' => t('Padding'),
       '#size' => 2,
       '#description' => t('The amount of padding in pixels in between grid items.'),
@@ -36,7 +58,7 @@ class views_photo_grid_plugin_style extends views_plugin_style {
   /**
    * Returns the name of the image field used in the view.
    */
-  function get_image_field_name() {
+  public function get_image_field_name() {
     $fields = $this->display->handler->get_handlers('field');
 
     // Find the first non-excluded image field.
@@ -91,5 +113,6 @@ class views_photo_grid_plugin_style extends views_plugin_style {
 
     return $errors;
   }
+
 
 }

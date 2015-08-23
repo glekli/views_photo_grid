@@ -6,16 +6,6 @@
  */
 
 /**
- * Implements hook_views_api().
- */
-function views_photo_grid_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module', 'views_photo_grid') .'/views',
-  );
-}
-
-/**
  * Preprocesses variables for the photo grid template.
  */
 function template_preprocess_views_photo_grid_style(&$vars) {
