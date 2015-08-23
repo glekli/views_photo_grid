@@ -11,6 +11,9 @@
   /**
    * Constructor for the grid object.
    *
+   * @param gridId
+   *   The id of the grid. Needs to match the id attribute of the container
+   *   element. See arrangeGrid().
    * @param width
    *   The total width of the grid that the each row must fit.
    * @param padding
@@ -30,8 +33,6 @@
    *   The new row.
    */
   Drupal.viewsPhotoGrid.grid.prototype.createRow = function () {
-    // Use array index as id. Id is used in the calculation to determine
-    // position so it needs to be sequential.
     var rowId = this.rows.length;
     var row = new Drupal.viewsPhotoGrid.gridRow(rowId, this.width, this.padding);
     this.rows.push(row);
@@ -82,7 +83,8 @@
    * the item.
    *
    * @param itemId
-   *   The item's id. Added to the dom elements for identification purposes.
+   *   The id of the item. Needs to match the id attribute of the container
+   *   element. See arrangeGrid().
    * @param width
    *   The original width of the image contained in this grid item.
    * @param height
