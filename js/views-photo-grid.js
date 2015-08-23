@@ -191,6 +191,10 @@
     // Calculate how much space is available for row items when accounting
     // for padding.
     var targetWidth = this.width - (this.items.length - 1) * this.padding;
+    if (targetWidth <= 0) {
+      // There is no room for any items.
+      return;
+    }
 
     // All items will be resized by a certain percentage to make them fit
     // the width calculated above.
