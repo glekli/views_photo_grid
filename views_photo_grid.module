@@ -23,7 +23,7 @@ function template_preprocess_views_photo_grid_style(&$vars) {
     $vars['items'][] = $handler->getField($key, $image_field);
   }
 
+  $vars['#attached']['drupalSettings']['viewsPhotoGrid']['gridPadding'] = $handler->options['grid_padding'];
   $vars['#attached']['library'][] =  'views_photo_grid/views_photo_grid';
-  // drupal_add_js(array('viewsPhotoGrid' => array('gridPadding' => $handler->options['grid_padding'])), 'setting');
 }
 

@@ -3,8 +3,9 @@
  * Javascript for the Views Photo Grid module.
  */
 
-(function ($) {
+(function ($, Drupal, drupalSettings) {
 
+  "use strict";
   Drupal.viewsPhotoGrid = {};
   Drupal.behaviors.viewsPhotoGrid = {};
 
@@ -271,7 +272,7 @@
       $(this).attr('id', 'views-photo-grid-' + containerIndex);
 
       // Create grid objects.
-      var gridPadding = parseInt(Drupal.settings.viewsPhotoGrid.gridPadding);
+      var gridPadding = parseInt(drupalSettings.viewsPhotoGrid.gridPadding);
       var grid = new Drupal.viewsPhotoGrid.grid(containerIndex, containerWidth, gridPadding);
       var row = grid.createRow();
 
@@ -331,7 +332,7 @@
   /**
    * Attaches behaviors.
    */
-  Drupal.behaviors.viewsPhotoGrid.attach = function (context) {
+  Drupal.behaviors.viewsPhotoGrid.attach = function (context, settings) {
     var triggerHandler = this.getTriggerHandler();
 
     // Arrange grid items.
@@ -342,5 +343,4 @@
     $(window).bind('resize', triggerHandler);
   };
 
-})(jQuery);
-
+})(jQuery, Drupal, drupalSettings);
