@@ -12,20 +12,18 @@ function template_preprocess_views_photo_grid_style(&$vars) {
   $view = $vars['view'];
   $handler  = $view->style_plugin;
 
-  $rendered_fields = $handler->render_fields($view->result);
   $image_field = $handler->get_image_field_name();
+  if (!$image_field) {
+    return;
+  }
 
   $vars['items'] = array();
 
-  foreach ($rendered_fields as $key => $row) {
-    if (!empty($row[$image_field])) {
-      $vars['items'][] = $row[$image_field];
-    }
+  foreach ($view->result as $key => $row) {
+    $vars['items'][] = $handler->getField($key, $image_field);
   }
 
-  $module_dir = drupal_get_path('module', 'views_photo_grid');
-  drupal_add_css($module_dir . '/css/views-photo-grid.css');
-  drupal_add_js(array('viewsPhotoGrid' => array('gridPadding' => $handler->options['grid_padding'])), 'setting');
-  drupal_add_js($module_dir . '/js/views-photo-grid.js');
-
+  $vars['#attached']['library'][] =  'views_photo_grid/views_photo_grid';
+  // drupal_add_js(array('viewsPhotoGrid' => array('gridPadding' => $handler->options['grid_padding'])), 'setting');
 }
+

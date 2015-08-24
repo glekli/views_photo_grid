@@ -1,0 +1,7 @@
+views_photo_grid:
+  js:
+    js/views-photo-grid.js: {}
+  css:
+    theme:
+      css/views-photo-grid.css: {}
+

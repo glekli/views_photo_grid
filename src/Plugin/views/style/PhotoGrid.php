@@ -24,7 +24,14 @@ use Drupal\Core\Form\FormStateInterface;
 class PhotoGrid extends StylePluginBase {
 
   /**
-   * Does the style plugin allows to use style plugins.
+   * Specifies if the plugin uses fields.
+   *
+   * @var bool
+   */
+  protected $usesFields = TRUE;
+
+  /**
+   * Specifies if the plugin uses row plugins.
    *
    * @var bool
    */
@@ -59,12 +66,18 @@ class PhotoGrid extends StylePluginBase {
    * Returns the name of the image field used in the view.
    */
   public function get_image_field_name() {
-    $fields = $this->display->handler->get_handlers('field');
+    $fields = $this->displayHandler->handlers['field'];
 
     // Find the first non-excluded image field.
     foreach ($fields as $key => $field) {
-      if (empty($field->options['exclude']) && !empty($field->field_info['type']) && $field->field_info['type'] == 'image') {
-        return $key;
+      // Get the storage definition in order to determine the field type.
+      // Note: This is the same as $field->getFieldStorageDefinition(), but
+      // that method is protected and inaccessible here.
+      $field_storage_definitions = \Drupal::entityManager()->getFieldStorageDefinitions($field->definition['entity_type']);
+      $field_type = $field_storage_definitions[$field->field]->getType();
+
+      if (empty($field->options['exclude']) && $field_type == 'image') {
+        return $field->field;
       }
     }
 
