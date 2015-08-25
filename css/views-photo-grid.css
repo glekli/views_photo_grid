@@ -5,3 +5,7 @@
 .views-photo-grid-container .views-photo-grid-item {
   position: absolute;
 }
+
+.views-photo-grid-container .views-photo-grid-item img {
+  max-width: none;
+}
