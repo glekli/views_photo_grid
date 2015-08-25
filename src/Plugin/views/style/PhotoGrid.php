@@ -54,9 +54,9 @@ class PhotoGrid extends StylePluginBase {
 
     $form['grid_padding'] = array(
       '#type' => 'number',
-      '#title' => t('Padding'),
+      '#title' => $this->t('Padding'),
       '#size' => 2,
-      '#description' => t('The amount of padding in pixels in between grid items.'),
+      '#description' => $this->t('The amount of padding in pixels in between grid items.'),
       '#default_value' => $this->options['grid_padding'],
       '#maxlength' => 2,
     );
@@ -92,14 +92,14 @@ class PhotoGrid extends StylePluginBase {
   function validate() {
     $errors = parent::validate();
 
-    if (!is_numeric($this->view->vid)) {
+    if ($this->view->storage->isNew()) {
       // Skip validation when the view is being created.
       // (the default field is a title field, which would fail.)
       return $errors;
     }
 
     // Get a list of fields that have been added to the display.
-    $fields = $this->display->handler->get_handlers('field');
+    $fields = $this->displayHandler->handlers['field'];
 
     // Check if there is exactly one image field to display.
     $fields_valid = TRUE;
@@ -111,7 +111,11 @@ class PhotoGrid extends StylePluginBase {
         continue;
       }
 
-      if (empty($field->field_info['type']) || $field->field_info['type'] != 'image') {
+      // Determine the field's type.
+      $field_storage_definitions = \Drupal::entityManager()->getFieldStorageDefinitions($field->definition['entity_type']);
+      $field_type = $field_storage_definitions[$field->field]->getType();
+
+      if ($field_type != 'image') {
         // Cannot display non-image fields. That would break the image grid.
         $fields_valid = FALSE;
         break;
@@ -121,7 +125,7 @@ class PhotoGrid extends StylePluginBase {
     }
 
     if (!$fields_valid || $field_count > 1) {
-      $errors[] = t('This format can display only one image field and no other fields.');
+      $errors[] = $this->t('This format can display only one image field and no other fields.');
     }
 
     return $errors;
