@@ -77,7 +77,6 @@
     this.items = [];
   };
 
-
   /**
    * Creates and adds an item to the row. Keeps track of the width used by
    * the item.
@@ -261,7 +260,6 @@
    *  Arranges the grid.
    */
   Drupal.behaviors.viewsPhotoGrid.arrangeGrid = function () {
-
     // Find all instances of this view style.
     $('.views-photo-grid-container').each(function (containerIndex) {
       var container = $(this);
@@ -285,8 +283,8 @@
         var img = $(this).find('img');
 
         // Remove css so that the actual size can be determined.
-        $(this).find('img').css('height', '');
-        $(this).find('img').css('width', '');
+        img.css('height', '');
+        img.css('width', '');
 
         row.createItem(itemId, img.width(), img.height());
 
